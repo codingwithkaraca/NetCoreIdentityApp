@@ -1,0 +1,41 @@
+@model UserVM;
+
+@{
+    ViewBag.Title = "Kayıt ol";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Kullanıcı Kayıt Formu</h2>
+        <form>
+            <div class="mb-3">
+                <label for="UserName" class="form-label" asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="Email" class="form-label" asp-for="Email"></label>
+                <input asp-for="Email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="Phone" class="form-label" asp-for="Phone"></label>
+                <input asp-for="Phone" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label" asp-for="Password"></label>
+                <input asp-for="Password" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="PasswordConfirm" class="form-label" asp-for="PasswordConfirm"></label>
+                <input asp-for="PasswordConfirm" class="form-control">
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Beni hatırla</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+        </form>
+    </div>
+</div>
+
