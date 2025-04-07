@@ -19,8 +19,8 @@ public class UserVM
     [Display(Name = "Kullanıcı adı")]
     public string UserName { get; set; }
     
-    [Display(Name = "Mail")]
-    public string Email;
+    [Display(Name = "Email")]
+    public string Email { get; set; }
     
     [Display(Name = "Telefon")]
     public string Phone { get; set; }
