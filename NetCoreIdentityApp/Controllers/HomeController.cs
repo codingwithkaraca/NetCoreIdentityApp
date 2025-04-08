@@ -41,6 +41,12 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> SignUp(UserVM request)
     {
+        
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+        
         var identityResult = await _userManager.CreateAsync(new User()
         {
             UserName = request.UserName,
