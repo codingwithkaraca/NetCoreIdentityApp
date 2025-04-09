@@ -1,6 +1,7 @@
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using NetCoreIdentityApp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +13,8 @@ builder.Services.AddDbContext<NetCoreIdentityAppContext>(options =>
     )
 );
 
-builder.Services.AddIdentity<User, UserRole>()
-    .AddEntityFrameworkStores<NetCoreIdentityAppContext>();
-
+// buradaki identity optionları kod kalabalığını azaltmak için extensiona taşıdık
+builder.Services.AddIdentityWithExtension();
 
 
 var app = builder.Build();

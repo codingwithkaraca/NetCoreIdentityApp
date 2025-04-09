@@ -54,3 +54,8 @@
     </div>
 </div>
 
+@*burası Layouttaki scriptlerden sonra gelmesini istediğimiz sayfaya özel scriptler ve kütüphanelerdir*@
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}
