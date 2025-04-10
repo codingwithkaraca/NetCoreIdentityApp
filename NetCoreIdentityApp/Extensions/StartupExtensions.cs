@@ -1,5 +1,7 @@
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using NetCoreIdentityApp.CustomValidations;
+using NetCoreIdentityApp.Localizations;
 
 namespace NetCoreIdentityApp.Extensions;
 
@@ -19,6 +21,9 @@ public static class StartupExtensions
                 options.Password.RequireDigit = true;
 
             })
+            .AddPasswordValidator<PasswordValidator>()
+            .AddUserValidator<UserValidator>()
+            .AddErrorDescriber<LocalizationIdentityErrorDescriber>()
             .AddEntityFrameworkStores<NetCoreIdentityAppContext>();
 
     }
