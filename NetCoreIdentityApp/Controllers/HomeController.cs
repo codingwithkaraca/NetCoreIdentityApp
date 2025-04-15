@@ -3,6 +3,7 @@ using Entities.Concrete;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NetCoreIdentityApp.Extensions;
 using NetCoreIdentityApp.Models;
 
 namespace NetCoreIdentityApp.Controllers;
@@ -11,11 +12,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public HomeController(ILogger<HomeController> logger, UserManager<User> userManager)
+    public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _logger = logger;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     public IActionResult Index()
@@ -28,8 +31,32 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Login()
+    public IActionResult SignIn()
     {
+        return View();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> SignIn(SignInVM model, string? returnUrl = null)
+    {
+        returnUrl = returnUrl ?? Url.Action("Index", "Home");
+        var hasUser = await _userManager.FindByEmailAsync(model.Email);
+
+        if (hasUser == null)
+        {
+            ModelState.AddModelError(String.Empty, "Email veya şifre yanlış");
+            return View();
+        }
+
+        var signInResult = await _signInManager.PasswordSignInAsync(hasUser, model.Password, model.RememberMe, false);
+
+        if (signInResult.Succeeded)
+        {
+            return Redirect(returnUrl);
+        }
+
+        ModelState.AddModelErrorList(new List<string>() {"Email veya şifre yanlış"});
+        
         return View();
     }
     
@@ -59,11 +86,7 @@ public class HomeController : Controller
             TempData["SuccessMessage"] = "Üyelik kayıt işlemi başarıyla gerçekleşmiştir";
             return RedirectToAction(nameof(HomeController.SignUp));
         }
-
-        foreach (var error in identityResult.Errors)
-        {
-            ModelState.AddModelError(string.Empty,error.Description);
-        }
+        ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
         return View();
     }
     
