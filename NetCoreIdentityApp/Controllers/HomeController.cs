@@ -39,6 +39,11 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> SignIn(SignInVM model, string? returnUrl = null)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        
         returnUrl = returnUrl ?? Url.Action("Index", "Home");
         var hasUser = await _userManager.FindByEmailAsync(model.Email);
 
@@ -48,14 +53,20 @@ public class HomeController : Controller
             return View();
         }
 
-        var signInResult = await _signInManager.PasswordSignInAsync(hasUser, model.Password, model.RememberMe, false);
+        var signInResult = await _signInManager.PasswordSignInAsync(hasUser, model.Password, model.RememberMe, true);
 
         if (signInResult.Succeeded)
         {
             return Redirect(returnUrl);
         }
 
-        ModelState.AddModelErrorList(new List<string>() {"Email veya şifre yanlış"});
+        if (signInResult.IsLockedOut)
+        {
+            ModelState.AddModelErrorList(new List<string>() {"Hesabınız yanlış denemeden dolayı 3 dakika kitlenmiştir."});
+            return View();
+        }
+
+        ModelState.AddModelErrorList(new List<string>() {$"Email veya şifre yanlış",$"Başarısız giriş sayısı = {await _userManager.GetAccessFailedCountAsync(hasUser)}"});
         
         return View();
     }
