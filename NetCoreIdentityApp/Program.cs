@@ -21,6 +21,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
     var cookieBuilder = new CookieBuilder();
     cookieBuilder.Name = "IdentityAppCookie";
     opt.LoginPath = new PathString("/Home/SignIn");
+    opt.LogoutPath = new PathString("/Member/LogOut");
     opt.Cookie = cookieBuilder;
     opt.ExpireTimeSpan = TimeSpan.FromDays(60); // 60 günlük
     opt.SlidingExpiration = true; // 60 gün içinde 1 gün bile girse tekrardan 0 dan üzerine 60 gün ekle
@@ -39,6 +40,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // area yı modern şekilde eklemek. Area Readme sodyasında eski versionunki kalmış

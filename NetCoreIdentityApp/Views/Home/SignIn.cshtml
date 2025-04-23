@@ -3,13 +3,12 @@
     ViewData["Title"] = "SignIn";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <h2>Kullanıcı Giriş</h2>
         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
         </div>
-        <form asp-controller="Home" asp-action="SignIn">
+        <form asp-controller="Home" asp-action="SignIn" asp-route-returnUrl="@Context.Request.Query["returnUrl"]" method="post">
             <div class="mb-3">
                 <label for="Email" class="form-label" asp-for="Email"></label>
                 <input asp-for="Email" class="form-control">
@@ -20,12 +19,24 @@
                 <input asp-for="Password" class="form-control">
                 <span class="text-danger" asp-validation-for="Password"></span>
             </div>
-            <div class="mb-3 form-check">
-                <input class="form-check-input" asp-for="RememberMe">
-                <label class="form-check-label" asp-for="RememberMe"></label>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 form-check">
+                        <input class="form-check-input" asp-for="RememberMe">
+                        <label class="form-check-label" asp-for="RememberMe"></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                        <a class="btn btn-outline-secondary btn-sm float-end" asp-controller="Home" asp-action="ForgetPassword">Şifremi unuttum</a>
+                </div>
             </div>
+            
             <button type="submit" class="btn btn-primary">Giriş</button>
         </form>
     </div>
 </div>
 
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}

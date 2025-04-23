@@ -1,5 +1,6 @@
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Identity;
 using NetCoreIdentityApp.CustomValidations;
 using NetCoreIdentityApp.Localizations;
 
@@ -9,6 +10,12 @@ public static class StartupExtensions
 {
     public static void AddIdentityWithExtension(this IServiceCollection services)
     {
+        // üretilecek token ömrü
+        services.Configure<DataProtectionTokenProviderOptions>(opt =>
+        {
+            opt.TokenLifespan = TimeSpan.FromHours(2);
+        });
+        
         services.AddIdentity<User, UserRole>(options => 
             {
                 options.User.RequireUniqueEmail = true;
@@ -26,6 +33,7 @@ public static class StartupExtensions
             .AddPasswordValidator<PasswordValidator>()
             .AddUserValidator<UserValidator>()
             .AddErrorDescriber<LocalizationIdentityErrorDescriber>()
+            .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<NetCoreIdentityAppContext>();
 
     }

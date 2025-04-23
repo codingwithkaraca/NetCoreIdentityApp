@@ -3,6 +3,8 @@ using Entities.Concrete;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using NetCoreIdentityApp.Extensions;
 using NetCoreIdentityApp.Models;
 
@@ -100,7 +102,34 @@ public class HomeController : Controller
         ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
         return View();
     }
-    
+
+    public IActionResult ForgetPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ForgetPassword(ForgetPasswordVM requestModel)
+    {
+        // örnek link : https://localhost:5128?userId=12345&token=adsfasdfsdsdfdgfgdhgdfh
+        var hasUser = await _userManager.FindByEmailAsync(requestModel.Email);
+        if (hasUser == null)
+        {
+            ModelState.AddModelError(String.Empty, "Bu emaile sahip kullanıcı bulunamamıştır.");
+            return View();
+        }
+
+        string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
+        var resetPasswordLink = Url.Action("ForgetPassword", "Home",
+            new {userId=hasUser.Id, Token = resetPasswordToken});
+        
+        // Email Service
+
+        TempData["SuccessMessage"] = "Şifre yenileme linki, e-posta adresinize gönderilmiştir";
+        
+        return RedirectToAction(nameof(HomeController.ForgetPassword));
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
