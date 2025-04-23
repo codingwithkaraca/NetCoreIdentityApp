@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using NetCoreIdentityApp.Extensions;
 using NetCoreIdentityApp.Models;
+using NetCoreIdentityApp.Services;
 
 namespace NetCoreIdentityApp.Controllers;
 
@@ -15,12 +16,14 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly IEmailService _emailService;
 
-    public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, SignInManager<User> signInManager)
+    public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, SignInManager<User> signInManager, IEmailService emailService)
     {
         _logger = logger;
         _userManager = userManager;
         _signInManager = signInManager;
+        _emailService = emailService;
     }
 
     public IActionResult Index()
@@ -119,16 +122,59 @@ public class HomeController : Controller
             return View();
         }
 
-        string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
-        var resetPasswordLink = Url.Action("ForgetPassword", "Home",
-            new {userId=hasUser.Id, Token = resetPasswordToken});
+        string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
+        
+        var resetPasswordLink = Url.Action("ResetPassword", "Home",
+            new {userId=hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
         
         // Email Service
-
+        await _emailService.SendResetPasswordEmail(resetPasswordLink, hasUser.Email);
+        
         TempData["SuccessMessage"] = "Şifre yenileme linki, e-posta adresinize gönderilmiştir";
         
         return RedirectToAction(nameof(HomeController.ForgetPassword));
     }
+
+    public IActionResult ResetPassword(string userId, string token)
+    {
+        TempData["userId"] = userId;
+        TempData["token"] = token;
+        return View();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(ResetPasswordVM requestModel)
+    {
+        var userId =  TempData["userId"];
+        var token =  TempData["token"];
+
+        if (userId == null || token == null)
+        {
+            throw new Exception("Bir hata meydana geldi");
+        }
+        
+        var hasUser = await _userManager.FindByIdAsync(userId.ToString());
+        if (hasUser == null)
+        {
+            ModelState.AddModelError(String.Empty, "Kullanıcı bulunamamıştır");
+            return View();
+        }
+
+        IdentityResult result = await _userManager.ResetPasswordAsync(hasUser, token.ToString(), requestModel.Password);
+
+        if (result.Succeeded)
+        {
+            TempData["SuccessMessage"] = "Şifreniz başarıyla yenilenmiştir";
+        }
+        else
+        {
+            ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
+        }
+        return View();
+    }
+
+
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

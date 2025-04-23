@@ -1,7 +1,9 @@
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Entities.OptionModels;
 using Microsoft.EntityFrameworkCore;
 using NetCoreIdentityApp.Extensions;
+using NetCoreIdentityApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,10 @@ builder.Services.AddDbContext<NetCoreIdentityAppContext>(options =>
     )
 );
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 // buradaki identity optionları kod kalabalığını azaltmak için extensiona taşıdık
 builder.Services.AddIdentityWithExtension();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {
