@@ -80,7 +80,7 @@ public class HomeController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> SignUp(UserVM request)
+    public async Task<IActionResult> SignUp(SignUpVM request)
     {
         
         if (!ModelState.IsValid)
@@ -172,8 +172,7 @@ public class HomeController : Controller
     }
 
 
-
-
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

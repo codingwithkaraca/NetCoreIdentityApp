@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.ViewModels;
 
-public class UserVM
+public class SignUpVM
 {
-    public UserVM()
+    public SignUpVM()
     {
         
     }
-    public UserVM(string userName, string email, string phone, string password)
+    public SignUpVM(string userName, string email, string phone, string password)
     {
         UserName = userName;
         Email = email;
