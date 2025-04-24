@@ -3,8 +3,6 @@ using Entities.Concrete;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using NetCoreIdentityApp.Extensions;
 using NetCoreIdentityApp.Models;
 using NetCoreIdentityApp.Services;
@@ -62,7 +60,7 @@ public class HomeController : Controller
 
         if (signInResult.Succeeded)
         {
-            return Redirect(returnUrl);
+            return Redirect(returnUrl!);
         }
 
         if (signInResult.IsLockedOut)
@@ -128,7 +126,7 @@ public class HomeController : Controller
             new {userId=hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
         
         // Email Service
-        await _emailService.SendResetPasswordEmail(resetPasswordLink, hasUser.Email);
+        await _emailService.SendResetPasswordEmail(resetPasswordLink!, hasUser.Email!);
         
         TempData["SuccessMessage"] = "Şifre yenileme linki, e-posta adresinize gönderilmiştir";
         
@@ -153,14 +151,14 @@ public class HomeController : Controller
             throw new Exception("Bir hata meydana geldi");
         }
         
-        var hasUser = await _userManager.FindByIdAsync(userId.ToString());
+        var hasUser = await _userManager.FindByIdAsync(userId.ToString()!);
         if (hasUser == null)
         {
             ModelState.AddModelError(String.Empty, "Kullanıcı bulunamamıştır");
             return View();
         }
 
-        IdentityResult result = await _userManager.ResetPasswordAsync(hasUser, token.ToString(), requestModel.Password);
+        IdentityResult result = await _userManager.ResetPasswordAsync(hasUser, token.ToString()!, requestModel.Password);
 
         if (result.Succeeded)
         {

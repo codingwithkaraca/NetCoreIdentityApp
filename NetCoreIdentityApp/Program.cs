@@ -1,6 +1,7 @@
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.OptionModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NetCoreIdentityApp.Extensions;
 using NetCoreIdentityApp.Services;
@@ -14,6 +15,12 @@ builder.Services.AddDbContext<NetCoreIdentityAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon")
     )
 );
+
+// 30 dakikada bir kontrol -> önemli bilgiler(kullanıcı bilgileri vb.) değişmiş mi kontrol etmek için
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.FromMinutes(30);
+});
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 // buradaki identity optionları kod kalabalığını azaltmak için extensiona taşıdık
