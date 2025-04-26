@@ -1,7 +1,28 @@
-
 @{
     ViewData["Title"] = "Index";
 }
+@model UserVM
 
-<h1 class="d-flex justify-content-center">Hoşgeldiniz @User.Identity!.Name</h1>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1 class="d-flex justify-content-center">Kullanıcı Bilgileri</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Kullanıcı Adı</th>
+                <th>Email</th>
+                <th>Telefon</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>@Model.UserName</td>
+                <td>@Model.Email</td>
+                <td>@Model.PhoneNumber</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 

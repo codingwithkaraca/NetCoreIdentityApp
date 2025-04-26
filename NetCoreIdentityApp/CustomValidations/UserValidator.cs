@@ -9,7 +9,7 @@ public class UserValidator : IUserValidator<User>
     {
         List<IdentityError> errors = new List<IdentityError>();
 
-        bool isDigit = int.TryParse(user.UserName[0].ToString(), out _);
+        bool isDigit = int.TryParse(user.UserName![0].ToString(), out _);
         if (isDigit)
         {
             errors.Add(new IdentityError() {Code = "UsernameContainFirstLetterDigit", Description = "Kullanıcı adı ilk karakteri sayısal bir karakter içeremez"});

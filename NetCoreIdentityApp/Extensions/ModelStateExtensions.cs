@@ -8,7 +8,7 @@ public static class ModelStateExtensions
     {
         errors.ForEach(x =>
             {
-             modelState.AddModelError(string.Empty, x);   
+                modelState.AddModelError(string.Empty, x);   
             }
         );
         
