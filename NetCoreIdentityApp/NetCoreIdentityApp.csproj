@@ -28,6 +28,7 @@
       <Folder Include="Areas\Admin\Data\" />
       <Folder Include="Areas\Admin\Views\Home\" />
       <Folder Include="Views\Member\" />
+      <Folder Include="wwwroot\userpictures\" />
     </ItemGroup>
 
     <ItemGroup>

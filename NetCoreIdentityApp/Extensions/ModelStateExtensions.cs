@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace NetCoreIdentityApp.Extensions;
@@ -13,4 +14,15 @@ public static class ModelStateExtensions
         );
         
     }
+    
+    public static void AddModelErrorList(this ModelStateDictionary modelState, IEnumerable<IdentityError> errors)
+    {
+        errors.ToList().ForEach(error =>
+            {
+                modelState.AddModelError(string.Empty, error.Description);   
+            }
+        );
+        
+    }
+    
 }

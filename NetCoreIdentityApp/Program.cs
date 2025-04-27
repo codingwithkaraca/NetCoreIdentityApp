@@ -3,6 +3,7 @@ using Entities.Concrete;
 using Entities.OptionModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using NetCoreIdentityApp.Extensions;
 using NetCoreIdentityApp.Services;
 
@@ -26,6 +27,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 // buradaki identity optionları kod kalabalığını azaltmak için extensiona taşıdık
 builder.Services.AddIdentityWithExtension();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {
