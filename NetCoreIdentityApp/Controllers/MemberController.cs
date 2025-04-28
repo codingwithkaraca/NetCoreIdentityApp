@@ -23,13 +23,14 @@ namespace NetCoreIdentityApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+            var currentUser = (await _userManager.FindByNameAsync(User.Identity!.Name!))!;
 
             var userViewModel = new UserVM
             {
-                UserName = currentUser!.UserName,
-                Email = currentUser!.Email,
-                PhoneNumber = currentUser!.PhoneNumber,
+                UserName = currentUser.UserName,
+                Email = currentUser.Email,
+                PhoneNumber = currentUser.PhoneNumber,
+                PictureUrl = currentUser.Picture,
             };
             
             return View(userViewModel);
