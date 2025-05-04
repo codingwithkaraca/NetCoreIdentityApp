@@ -1,0 +1,42 @@
+@model List<AdminModel.RoleVM> 
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4 offset-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-info" role="alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1 class="d-flex justify-content-center">Kullanıcı Rolleri</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>İsim</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<a class="btn btn-primary" asp-area="Admin" asp-controller="Roles" asp-action="RoleCreate">Rol Ekle</a>
