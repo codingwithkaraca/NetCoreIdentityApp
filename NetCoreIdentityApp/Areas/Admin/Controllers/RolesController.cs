@@ -97,5 +97,46 @@ namespace NetCoreIdentityApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(RolesController.Index));
         }
 
+        public async Task<IActionResult> AssignRoleToUser(string id)
+        {
+            var currentUser = (await _userManager.FindByIdAsync(id))!;
+            ViewBag.userId = currentUser.Id;
+            var roles = await _roleManager.Roles.ToListAsync();
+            var roleList = new List<AssignRoleToUserVM>();
+            var userRoles = await _userManager.GetRolesAsync(currentUser);
+            foreach (var role in roles)
+            {
+                var asssignRoleToUserModel = new AssignRoleToUserVM()
+                {
+                    Id = role.Id,
+                    Name = role.Name!,
+                };
+
+                if (userRoles.Contains(role.Name!))
+                {
+                    asssignRoleToUserModel.IsExists = true ;
+                }
+                roleList.Add(asssignRoleToUserModel);
+            }
+            return View(roleList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignRoleToUser(string userId, List<AssignRoleToUserVM> requestList)
+        {
+            var userToAssignRoles = (await _userManager.FindByIdAsync(userId))!;
+            foreach (var role in requestList)
+            {
+                if (role.IsExists)
+                {
+                    await _userManager.AddToRoleAsync(userToAssignRoles, role.Name);
+                }
+                else
+                {
+                    await _userManager.RemoveFromRoleAsync(userToAssignRoles, role.Name);
+                }
+            }
+            return RedirectToAction(nameof(HomeController.UserList),"Home");
+        }
     }
 }
