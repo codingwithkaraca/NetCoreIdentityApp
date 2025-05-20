@@ -143,11 +143,19 @@ namespace NetCoreIdentityApp.Controllers
             return View(userEditModel);
         }
         
-
         // bu çıkış yap butonu çıkış yaptıktan sonra bana hangi url'e gitme avantajını sağlıyor
         public async Task LogOut()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public IActionResult AccessDenied(string ReturnUrl)
+        {
+            string message = string.Empty;
+
+            message = "Yetkiniz yoktur. Yöneticiniz ile görüşünüz";
+            ViewBag.Message = message ;
+            return View();
         }
 
     }

@@ -20,7 +20,7 @@ builder.Services.AddDbContext<NetCoreIdentityAppContext>(options =>
 // 30 dakikada bir kontrol -> önemli bilgiler(kullanıcı bilgileri vb.) değişmiş mi kontrol etmek için
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 {
-    options.ValidationInterval = TimeSpan.FromMinutes(30);
+    options.ValidationInterval = TimeSpan.FromMinutes(20);
 });
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
@@ -35,6 +35,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
     cookieBuilder.Name = "IdentityAppCookie";
     opt.LoginPath = new PathString("/Home/SignIn");
     opt.LogoutPath = new PathString("/Member/LogOut");
+    opt.AccessDeniedPath = new PathString("/Member/AccessDenied");
     opt.Cookie = cookieBuilder;
     opt.ExpireTimeSpan = TimeSpan.FromDays(60); // 60 günlük
     opt.SlidingExpiration = true; // 60 gün içinde 1 gün bile girse tekrardan 0 dan üzerine 60 gün ekle
