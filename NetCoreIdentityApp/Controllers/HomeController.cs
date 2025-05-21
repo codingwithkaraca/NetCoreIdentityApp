@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Entities.Concrete;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,8 @@ public class HomeController : Controller
     private readonly SignInManager<User> _signInManager;
     private readonly IEmailService _emailService;
 
-    public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, SignInManager<User> signInManager, IEmailService emailService)
+    public HomeController(ILogger<HomeController> logger, UserManager<User> userManager,
+        SignInManager<User> signInManager, IEmailService emailService)
     {
         _logger = logger;
         _userManager = userManager;
@@ -38,7 +40,7 @@ public class HomeController : Controller
     {
         return View();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> SignIn(SignInVM model, string? returnUrl = null)
     {
@@ -46,7 +48,7 @@ public class HomeController : Controller
         {
             return View(model);
         }
-        
+
         returnUrl = returnUrl ?? Url.Action("Index", "Home");
         var hasUser = await _userManager.FindByEmailAsync(model.Email);
 
@@ -65,29 +67,33 @@ public class HomeController : Controller
 
         if (signInResult.IsLockedOut)
         {
-            ModelState.AddModelErrorList(new List<string>() {"Hesabınız yanlış denemeden dolayı 3 dakika kitlenmiştir."});
+            ModelState.AddModelErrorList(new List<string>()
+                { "Hesabınız yanlış denemeden dolayı 3 dakika kitlenmiştir." });
             return View();
         }
 
-        ModelState.AddModelErrorList(new List<string>() {$"Email veya şifre yanlış",$"Başarısız giriş sayısı = {await _userManager.GetAccessFailedCountAsync(hasUser)}"});
-        
+        ModelState.AddModelErrorList(new List<string>()
+        {
+            $"Email veya şifre yanlış",
+            $"Başarısız giriş sayısı = {await _userManager.GetAccessFailedCountAsync(hasUser)}"
+        });
+
         return View();
     }
-    
+
     public IActionResult SignUp()
     {
         return View();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> SignUp(SignUpVM request)
     {
-        
         if (!ModelState.IsValid)
         {
             return View();
         }
-        
+
         var identityResult = await _userManager.CreateAsync(new User()
         {
             UserName = request.UserName,
@@ -95,13 +101,25 @@ public class HomeController : Controller
             PhoneNumber = request.Phone
         }, request.PasswordConfirm);
 
-        if (identityResult.Succeeded)
+        if (!identityResult.Succeeded)
         {
-            TempData["SuccessMessage"] = "Üyelik kayıt işlemi başarıyla gerçekleşmiştir";
-            return RedirectToAction(nameof(HomeController.SignUp));
+            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
+            return View();
         }
-        ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
-        return View();
+
+        // burada bu kod claim-bazlı authorizaton daki policy kullanımından dan policy-bazlı Authorization farkını göstermek.
+        // kullanıcı kayıt olduğundan sonra 10 günlük bir policy eklemek için, senaryoya göre kullan
+        var exchangeExpireClaim = new Claim("ExchangeExpireDate", DateTime.Now.AddDays(10).ToString());
+        var user = await _userManager.FindByNameAsync(request.UserName);
+        var claimResult = await _userManager.AddClaimAsync(user!, exchangeExpireClaim);
+        if (!claimResult.Succeeded)
+        {
+            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
+            return View();
+        }
+
+        TempData["SuccessMessage"] = "Üyelik kayıt işlemi başarıyla gerçekleşmiştir";
+        return RedirectToAction(nameof(HomeController.SignUp));
     }
 
     public IActionResult ForgetPassword()
@@ -121,15 +139,15 @@ public class HomeController : Controller
         }
 
         string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
-        
+
         var resetPasswordLink = Url.Action("ResetPassword", "Home",
-            new {userId=hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
-        
+            new { userId = hasUser.Id, Token = passwordResetToken }, HttpContext.Request.Scheme);
+
         // Email Service
         await _emailService.SendResetPasswordEmail(resetPasswordLink!, hasUser.Email!);
-        
+
         TempData["SuccessMessage"] = "Şifre yenileme linki, e-posta adresinize gönderilmiştir";
-        
+
         return RedirectToAction(nameof(HomeController.ForgetPassword));
     }
 
@@ -139,18 +157,18 @@ public class HomeController : Controller
         TempData["token"] = token;
         return View();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> ResetPassword(ResetPasswordVM requestModel)
     {
-        var userId =  TempData["userId"];
-        var token =  TempData["token"];
+        var userId = TempData["userId"];
+        var token = TempData["token"];
 
         if (userId == null || token == null)
         {
             throw new Exception("Bir hata meydana geldi");
         }
-        
+
         var hasUser = await _userManager.FindByIdAsync(userId.ToString()!);
         if (hasUser == null)
         {
@@ -158,7 +176,8 @@ public class HomeController : Controller
             return View();
         }
 
-        IdentityResult result = await _userManager.ResetPasswordAsync(hasUser, token.ToString()!, requestModel.Password);
+        IdentityResult result =
+            await _userManager.ResetPasswordAsync(hasUser, token.ToString()!, requestModel.Password);
 
         if (result.Succeeded)
         {
@@ -168,11 +187,11 @@ public class HomeController : Controller
         {
             ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
         }
+
         return View();
     }
 
 
-    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
