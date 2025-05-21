@@ -57,13 +57,8 @@ public class HomeController : Controller
             ModelState.AddModelError(String.Empty, "Email veya şifre yanlış");
             return View();
         }
-
+        
         var signInResult = await _signInManager.PasswordSignInAsync(hasUser, model.Password, model.RememberMe, true);
-
-        if (signInResult.Succeeded)
-        {
-            return Redirect(returnUrl!);
-        }
 
         if (signInResult.IsLockedOut)
         {
@@ -71,14 +66,23 @@ public class HomeController : Controller
                 { "Hesabınız yanlış denemeden dolayı 3 dakika kitlenmiştir." });
             return View();
         }
-
-        ModelState.AddModelErrorList(new List<string>()
+        
+        if (!signInResult.Succeeded)
         {
-            $"Email veya şifre yanlış",
-            $"Başarısız giriş sayısı = {await _userManager.GetAccessFailedCountAsync(hasUser)}"
-        });
-
-        return View();
+            ModelState.AddModelErrorList(new List<string>()
+            {
+                $"Email veya şifre yanlış", 
+                $"Başarısız giriş sayısı = {await _userManager.GetAccessFailedCountAsync(hasUser)}"
+            });
+            return View();
+        }
+        
+        if (hasUser.BirthDate.HasValue)
+        {
+            await _signInManager.SignInWithClaimsAsync(hasUser, model.RememberMe, 
+                new[] { new Claim("birthdate", hasUser.BirthDate.Value.ToString())});
+        }
+        return Redirect(returnUrl!);
     }
 
     public IActionResult SignUp()

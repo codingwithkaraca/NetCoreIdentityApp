@@ -34,6 +34,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IClaimsTransformation, UserClaimProvider>();
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 builder.Services.AddScoped<IAuthorizationHandler, ExchangeExpireRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ViolenceRequirementHandler>();
 
 builder.Services.AddAuthorization(opt =>
 {
@@ -49,6 +50,15 @@ builder.Services.AddAuthorization(options =>
     {
         policy.AddRequirements(new ExchangeExpireRequirement());
     });
+});
+
+// yaşa göre şiddet sayfasını yetkilendirmek için
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ViolencePolicy", policy =>
+    {
+        policy.AddRequirements(new ViolenceRequirement(){ThresholdAge = 18});
+    });    
 });
 
 builder.Services.ConfigureApplicationCookie(opt =>
