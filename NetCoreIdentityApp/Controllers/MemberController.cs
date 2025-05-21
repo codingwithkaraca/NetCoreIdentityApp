@@ -158,5 +158,25 @@ namespace NetCoreIdentityApp.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Claims()
+        {
+            List<ClaimVM> userClaimList = User.Claims.Select(x => new ClaimVM()
+            {
+                Issuer = x.Issuer,
+                Type = x.Type,
+                Value = x.Value,
+            }).ToList();
+            
+            return View(userClaimList);
+        }
+
+        // claim konusunda policy bazlı sayfa yetkilendirmek için
+        [Authorize(Policy = "AnkaraPolicy")]
+        [HttpGet]
+        public IActionResult AnkaraPage()
+        {
+            return View();
+        }
     }
 }
