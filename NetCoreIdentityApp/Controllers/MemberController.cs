@@ -178,5 +178,14 @@ namespace NetCoreIdentityApp.Controllers
         {
             return View();
         }
+        
+        // policy based authorization ile sayfa yetkilendirmek için
+        [Authorize(Policy = "ExchangePolicy")]
+        [HttpGet]
+        public IActionResult ExchangePage()
+        {
+            return View();
+        }
+        
     }
 }

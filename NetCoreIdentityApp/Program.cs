@@ -2,11 +2,13 @@ using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.OptionModels;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using NetCoreIdentityApp.ClaimProviders;
 using NetCoreIdentityApp.Extensions;
+using NetCoreIdentityApp.Requirements;
 using NetCoreIdentityApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,12 +33,21 @@ builder.Services.AddIdentityWithExtension();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IClaimsTransformation, UserClaimProvider>();
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+builder.Services.AddScoped<IAuthorizationHandler, ExchangeExpireRequirementHandler>();
 
 builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("AnkaraPolicy", policy =>
     {
         policy.RequireClaim("city","ankara");
+    });
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ExchangePolicy", policy =>
+    {
+        policy.AddRequirements(new ExchangeExpireRequirement());
     });
 });
 
