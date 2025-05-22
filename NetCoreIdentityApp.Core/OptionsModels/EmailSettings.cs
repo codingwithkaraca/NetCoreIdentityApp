@@ -1,4 +1,4 @@
-namespace NetCoreIdentityApp.Entities.OptionModels;
+namespace NetCoreIdentityApp.Core.OptionsModels;
 
 public class EmailSettings
 {

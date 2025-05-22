@@ -1,4 +1,4 @@
-namespace NetCoreIdentityApp.Web.PermissionsRoot;
+namespace NetCoreIdentityApp.Core.PermissionsRoot;
 
 public static class Permission
 {

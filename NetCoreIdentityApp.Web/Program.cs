@@ -1,14 +1,14 @@
 using NetCoreIdentityApp.DataAccess.Concrete.EntityFramework;
 using NetCoreIdentityApp.Entities.Concrete;
-using NetCoreIdentityApp.Entities.OptionModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using NetCoreIdentityApp.Core.OptionsModels;
 using NetCoreIdentityApp.Web.ClaimProviders;
 using NetCoreIdentityApp.Web.Extensions;
-using NetCoreIdentityApp.Web.PermissionsRoot;
+using NetCoreIdentityApp.Core.PermissionsRoot;
 using NetCoreIdentityApp.Web.Requirements;
 using NetCoreIdentityApp.Web.Seeds;
 using NetCoreIdentityApp.Web.Services;
