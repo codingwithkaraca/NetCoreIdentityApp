@@ -30,6 +30,7 @@
       <Folder Include="Areas\Admin\Views\Home\" />
       <Folder Include="Areas\Admin\Views\Roles\" />
       <Folder Include="Views\Member\" />
+      <Folder Include="Views\Order\" />
       <Folder Include="wwwroot\userpictures\" />
     </ItemGroup>
 

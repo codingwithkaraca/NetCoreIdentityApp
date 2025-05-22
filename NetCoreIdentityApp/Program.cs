@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using NetCoreIdentityApp.ClaimProviders;
 using NetCoreIdentityApp.Extensions;
+using NetCoreIdentityApp.PermissionsRoot;
 using NetCoreIdentityApp.Requirements;
+using NetCoreIdentityApp.Seeds;
 using NetCoreIdentityApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,29 +38,34 @@ builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.
 builder.Services.AddScoped<IAuthorizationHandler, ExchangeExpireRequirementHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ViolenceRequirementHandler>();
 
-builder.Services.AddAuthorization(opt =>
+builder.Services.AddAuthorization(options =>
 {
-    opt.AddPolicy("AnkaraPolicy", policy =>
+    // kullanıcının şehir bilgisine göre sayfa yetkilendirmek için
+    options.AddPolicy("AnkaraPolicy", policy =>
     {
         policy.RequireClaim("city","ankara");
     });
-});
-
-builder.Services.AddAuthorization(options =>
-{
+    
+    // yeni kayıt olan kullanıcılara özel bir sayfayı 10 gün göstermek için
     options.AddPolicy("ExchangePolicy", policy =>
     {
         policy.AddRequirements(new ExchangeExpireRequirement());
     });
-});
-
-// yaşa göre şiddet sayfasını yetkilendirmek için
-builder.Services.AddAuthorization(options =>
-{
+    
+    // şiddet içeren sayfaları kullanıcının yaşına göre göstermek için
     options.AddPolicy("ViolencePolicy", policy =>
     {
         policy.AddRequirements(new ViolenceRequirement(){ThresholdAge = 18});
-    });    
+    }); 
+    
+    // permissionlar, işleme göre yetkilendirme
+    options.AddPolicy("OrderPermissionReadAndDelete", policy =>
+    {
+        policy.RequireClaim("Permission", Permission.Order.Read);
+        policy.RequireClaim("Permission", Permission.Order.Delete);
+        policy.RequireClaim("Permission", Permission.Stock.Delete);
+    });  
+    
 });
 
 builder.Services.ConfigureApplicationCookie(opt =>
@@ -74,6 +81,12 @@ builder.Services.ConfigureApplicationCookie(opt =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<UserRole>>();
+    await PermissionSeed.Seed(roleManager);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
