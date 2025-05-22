@@ -4,8 +4,8 @@ using NetCoreIdentityApp.Entities.Concrete;
 using NetCoreIdentityApp.Entities.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NetCoreIdentityApp.Core.Models;
 using NetCoreIdentityApp.Web.Extensions;
-using NetCoreIdentityApp.Web.Models;
 using NetCoreIdentityApp.Web.Services;
 
 namespace NetCoreIdentityApp.Web.Controllers;

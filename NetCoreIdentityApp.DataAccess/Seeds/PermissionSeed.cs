@@ -3,7 +3,7 @@ using NetCoreIdentityApp.Entities.Concrete;
 using Microsoft.AspNetCore.Identity;
 using NetCoreIdentityApp.Core.PermissionsRoot;
 
-namespace NetCoreIdentityApp.Web.Seeds;
+namespace NetCoreIdentityApp.DataAccess.Seeds;
 
 public class PermissionSeed
 {

@@ -10,7 +10,7 @@ using NetCoreIdentityApp.Web.ClaimProviders;
 using NetCoreIdentityApp.Web.Extensions;
 using NetCoreIdentityApp.Core.PermissionsRoot;
 using NetCoreIdentityApp.Web.Requirements;
-using NetCoreIdentityApp.Web.Seeds;
+using NetCoreIdentityApp.DataAccess.Seeds;
 using NetCoreIdentityApp.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);

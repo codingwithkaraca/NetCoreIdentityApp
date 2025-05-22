@@ -1,4 +1,4 @@
-namespace NetCoreIdentityApp.Web.Models;
+namespace NetCoreIdentityApp.Core.Models;
 
 public class ErrorViewModel
 {
