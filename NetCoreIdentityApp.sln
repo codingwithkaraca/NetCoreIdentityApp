@@ -1,12 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreIdentityApp", "NetCoreIdentityApp\NetCoreIdentityApp.csproj", "{61D7DA15-5739-4E93-AC9B-DD35E5C6840D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreIdentityApp.Web", "NetCoreIdentityApp.Web\NetCoreIdentityApp.Web.csproj", "{61D7DA15-5739-4E93-AC9B-DD35E5C6840D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{487BA0C0-F6D9-4C89-89E0-25B1B1B399D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreIdentityApp.DataAccess", "NetCoreIdentityApp.DataAccess\NetCoreIdentityApp.DataAccess.csproj", "{487BA0C0-F6D9-4C89-89E0-25B1B1B399D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{7057F04B-83C1-4FCD-A5D5-F46256B040B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreIdentityApp.Core", "NetCoreIdentityApp.Core\NetCoreIdentityApp.Core.csproj", "{7057F04B-83C1-4FCD-A5D5-F46256B040B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{38F9366F-38AF-4E23-BAFC-D2AF52660214}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreIdentityApp.Entities", "NetCoreIdentityApp.Entities\NetCoreIdentityApp.Entities.csproj", "{38F9366F-38AF-4E23-BAFC-D2AF52660214}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreIdentityApp.Service", "NetCoreIdentityApp.Service\NetCoreIdentityApp.Service.csproj", "{352E018B-E013-4D8C-A0F5-EE9C34476D4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +32,9 @@ Global
 		{38F9366F-38AF-4E23-BAFC-D2AF52660214}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38F9366F-38AF-4E23-BAFC-D2AF52660214}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38F9366F-38AF-4E23-BAFC-D2AF52660214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{352E018B-E013-4D8C-A0F5-EE9C34476D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{352E018B-E013-4D8C-A0F5-EE9C34476D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{352E018B-E013-4D8C-A0F5-EE9C34476D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{352E018B-E013-4D8C-A0F5-EE9C34476D4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
