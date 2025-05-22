@@ -66,6 +66,21 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("Permission", Permission.Stock.Delete);
     });  
     
+    options.AddPolicy("Permission.Order.Read", policy =>
+    {
+        policy.RequireClaim("Permission", Permission.Order.Read);
+    });  
+    
+    options.AddPolicy("Permission.Order.Delete", policy =>
+    {
+        policy.RequireClaim("Permission", Permission.Order.Delete);
+    }); 
+    
+    options.AddPolicy("Permission.Stock.Delete", policy =>
+    {
+        policy.RequireClaim("Permission", Permission.Stock.Delete);
+    }); 
+    
 });
 
 builder.Services.ConfigureApplicationCookie(opt =>

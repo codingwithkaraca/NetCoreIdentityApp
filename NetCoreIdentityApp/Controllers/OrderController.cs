@@ -5,7 +5,7 @@ namespace NetCoreIdentityApp.Controllers
 {
     public class OrderController : Controller
     {
-        [Authorize(Policy = "OrderPermissionReadAndDelete")]
+        [Authorize(Policy = "Permission.Order.Read")]
         public ActionResult Index()
         {
             return View();
