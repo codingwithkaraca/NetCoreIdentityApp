@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using NetCoreIdentityApp.Core.OptionsModels;
 using Microsoft.Extensions.Options;
+using NetCoreIdentityApp.Web.Services;
 
 namespace NetCoreIdentityApp.Service.Services;
 
