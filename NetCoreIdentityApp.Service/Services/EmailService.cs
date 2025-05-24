@@ -3,7 +3,7 @@ using System.Net.Mail;
 using NetCoreIdentityApp.Core.OptionsModels;
 using Microsoft.Extensions.Options;
 
-namespace NetCoreIdentityApp.Web.Services;
+namespace NetCoreIdentityApp.Service.Services;
 
 public class EmailService : IEmailService
 {

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using NetCoreIdentityApp.Service.Abstract;
+using NetCoreIdentityApp.Service.Concrete;
 using NetCoreIdentityApp.Web.Extensions;
 
 namespace NetCoreIdentityApp.Web.Controllers
@@ -15,28 +17,21 @@ namespace NetCoreIdentityApp.Web.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IFileProvider _fileProvider;
+        private string UserName => User.Identity!.Name!;
+        private readonly IMemberService _memberService;
 
         public MemberController(SignInManager<User> signInManager, UserManager<User> userManager,
-            IFileProvider fileProvider)
+            IFileProvider fileProvider, MemberService memberService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _fileProvider = fileProvider;
+            _memberService = memberService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var currentUser = (await _userManager.FindByNameAsync(User.Identity!.Name!))!;
-
-            var userViewModel = new UserVM
-            {
-                UserName = currentUser.UserName,
-                Email = currentUser.Email,
-                PhoneNumber = currentUser.PhoneNumber,
-                PictureUrl = currentUser.Picture,
-            };
-
-            return View(userViewModel);
+            return View(await _memberService.GetUserViewModelByUserNameAsync(UserName));
         }
 
         public IActionResult PasswordChange()
@@ -51,27 +46,22 @@ namespace NetCoreIdentityApp.Web.Controllers
             {
                 return View();
             }
-
-            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-            var chechPassword = await _userManager.CheckPasswordAsync(currentUser, requestModel.PasswordOld);
-            if (!chechPassword)
+            
+            if (! await _memberService.CheckPasswordAsync(UserName, requestModel.PasswordOld))
             {
                 ModelState.AddModelError(String.Empty, "Eski şifreniz geçersizdir");
                 return View();
             }
 
-            var resultChangePassword =
-                await _userManager.ChangePasswordAsync(currentUser, requestModel.PasswordOld, requestModel.PasswordNew);
-
-            if (!resultChangePassword.Succeeded)
+            var (isSuccess, errors) =
+                await _memberService.ChangePasswordAsync(UserName, requestModel.PasswordOld, requestModel.PasswordNew);
+            
+            if (!isSuccess)
             {
-                ModelState.AddModelErrorList(resultChangePassword.Errors.Select(x => x.Description).ToList());
+                ModelState.AddModelErrorList(errors!);
                 return View();
             }
-
-            await _userManager.UpdateSecurityStampAsync(currentUser);
-            await _signInManager.SignOutAsync();
-            await _signInManager.PasswordSignInAsync(currentUser, requestModel.PasswordNew, true, false);
+            
             TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirilmiştir";
             return View();
         }
@@ -158,7 +148,7 @@ namespace NetCoreIdentityApp.Web.Controllers
         // bu çıkış yap butonu çıkış yaptıktan sonra bana hangi url'e gitme avantajını sağlıyor
         public async Task LogOut()
         {
-            await _signInManager.SignOutAsync();
+            await _memberService.LogOutAsync();
         }
 
         public IActionResult AccessDenied(string ReturnUrl)

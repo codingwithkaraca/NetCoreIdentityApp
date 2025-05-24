@@ -22,6 +22,7 @@
       <ProjectReference Include="..\NetCoreIdentityApp.Core\NetCoreIdentityApp.Core.csproj" />
       <ProjectReference Include="..\NetCoreIdentityApp.DataAccess\NetCoreIdentityApp.DataAccess.csproj" />
       <ProjectReference Include="..\NetCoreIdentityApp.Entities\NetCoreIdentityApp.Entities.csproj" />
+      <ProjectReference Include="..\NetCoreIdentityApp.Service\NetCoreIdentityApp.Service.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -11,7 +11,9 @@ using NetCoreIdentityApp.Web.Extensions;
 using NetCoreIdentityApp.Core.PermissionsRoot;
 using NetCoreIdentityApp.Web.Requirements;
 using NetCoreIdentityApp.DataAccess.Seeds;
-using NetCoreIdentityApp.Web.Services;
+using NetCoreIdentityApp.Service.Abstract;
+using NetCoreIdentityApp.Service.Concrete;
+using NetCoreIdentityApp.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,7 @@ builder.Services.AddScoped<IClaimsTransformation, UserClaimProvider>();
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 builder.Services.AddScoped<IAuthorizationHandler, ExchangeExpireRequirementHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ViolenceRequirementHandler>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddAuthorization(options =>
 {

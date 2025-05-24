@@ -1,4 +1,4 @@
-namespace NetCoreIdentityApp.Web.Services;
+namespace NetCoreIdentityApp.Service.Services;
 
 public interface IEmailService
 {
