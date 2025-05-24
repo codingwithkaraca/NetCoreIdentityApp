@@ -10,4 +10,6 @@ public interface IMemberService
     Task<bool> CheckPasswordAsync(string userName, string password);
     Task<(bool, IEnumerable<IdentityError>?)> ChangePasswordAsync(string userName, string oldPassword,
         string newPassword);
+    
+    Task<UserEditVM> GetUserEditViewModelByUserNameAsync(string userName);
 }

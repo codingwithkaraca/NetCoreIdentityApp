@@ -57,4 +57,17 @@ public class MemberService : IMemberService
         return (true, null);
     }
 
+    public async Task<UserEditVM> GetUserEditViewModelByUserNameAsync(string userName)
+    {
+        var currentUser = await _userManager.FindByNameAsync(userName);
+        return new UserEditVM
+        {
+            UserName = currentUser.UserName!,
+            Email = currentUser.Email!,
+            Phone = currentUser.PhoneNumber!,
+            BirthDate = currentUser.BirthDate,
+            City = currentUser.City,
+            Gender = currentUser.Gender
+        };
+    }
 }

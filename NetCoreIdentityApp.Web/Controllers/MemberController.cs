@@ -68,19 +68,7 @@ namespace NetCoreIdentityApp.Web.Controllers
 
         public async Task<IActionResult> UserEdit()
         {
-            var currentUser = (await _userManager.FindByNameAsync(User.Identity!.Name!))!;
-
-            var userEditModel = new UserEditVM
-            {
-                UserName = currentUser.UserName!,
-                Email = currentUser.Email!,
-                Phone = currentUser.PhoneNumber!,
-                BirthDate = currentUser.BirthDate,
-                City = currentUser.City,
-                Gender = currentUser.Gender
-            };
-
-            return View(userEditModel);
+            return View(await _memberService.GetUserEditViewModelByUserNameAsync(UserName));
         }
 
         [HttpPost]
