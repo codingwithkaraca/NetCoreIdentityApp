@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using NetCoreIdentityApp.Entities.ViewModels;
 
@@ -12,4 +13,6 @@ public interface IMemberService
         string newPassword);
     
     Task<UserEditVM> GetUserEditViewModelByUserNameAsync(string userName);
+    List<ClaimVM> GetClaims(ClaimsPrincipal principal);
+    
 }

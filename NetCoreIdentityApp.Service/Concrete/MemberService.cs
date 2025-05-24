@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using NetCoreIdentityApp.Entities.Concrete;
 using NetCoreIdentityApp.Entities.ViewModels;
@@ -69,5 +70,16 @@ public class MemberService : IMemberService
             City = currentUser.City,
             Gender = currentUser.Gender
         };
+    }
+
+    public List<ClaimVM> GetClaims(ClaimsPrincipal principal)
+    {
+        return principal.Claims.Select(x => new ClaimVM()
+        {
+            Issuer = x.Issuer,
+            Type = x.Type,
+            Value = x.Value,
+        }).ToList();
+        
     }
 }

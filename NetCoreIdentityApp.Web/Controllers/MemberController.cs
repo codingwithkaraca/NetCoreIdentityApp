@@ -21,7 +21,7 @@ namespace NetCoreIdentityApp.Web.Controllers
         private readonly IMemberService _memberService;
 
         public MemberController(SignInManager<User> signInManager, UserManager<User> userManager,
-            IFileProvider fileProvider, MemberService memberService)
+            IFileProvider fileProvider, IMemberService memberService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -151,14 +151,7 @@ namespace NetCoreIdentityApp.Web.Controllers
         [HttpGet]
         public IActionResult Claims()
         {
-            List<ClaimVM> userClaimList = User.Claims.Select(x => new ClaimVM()
-            {
-                Issuer = x.Issuer,
-                Type = x.Type,
-                Value = x.Value,
-            }).ToList();
-
-            return View(userClaimList);
+            return View(_memberService.GetClaims(User));
         }
 
         // claim konusunda policy bazlı şehre göre sayfa yetkilendirmek için 
